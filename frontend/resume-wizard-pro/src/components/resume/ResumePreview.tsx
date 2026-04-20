@@ -5,9 +5,10 @@ interface ResumePreviewProps {
   data: ResumeData;
   template: TemplateInfo;
   scale?: number;
+  height?:number
 }
 
-const ResumePreview = ({ data, template, scale = 1 }: ResumePreviewProps) => {
+const ResumePreview = ({ data, template, scale = 1 ,height}: ResumePreviewProps) => {
   const accent = template.accentColor;
 
   return (
@@ -15,7 +16,7 @@ const ResumePreview = ({ data, template, scale = 1 }: ResumePreviewProps) => {
       className="resume-page origin-top-left"
       style={{
         width: 595,
-        minHeight: 842,
+        height: height,
         padding: "40px 48px",
         transform: `scale(${scale})`,
         transformOrigin: "top left",

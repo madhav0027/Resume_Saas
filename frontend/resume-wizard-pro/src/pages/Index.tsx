@@ -8,20 +8,61 @@ import StepThree from "@/components/resume/StepThree";
 import { ResumeData, emptyResume, sampleResume } from "@/types/resume";
 import AuthDialog from "@/components/auth/AuthDialog";
 import Navbar from "@/components/Navbar";
+import { useAuth } from "@/Authprovider/AuthProvider";
+import { api } from "@/api/api";
+
 
 const STEPS = ["Choose Method", "Enter Details", "Preview"];
+
+const normalizeResume = (data: any): ResumeData => ({
+  fullName: data.fullName || data.name || "",
+  email: data.email || "",
+  phone: data.phone || "",
+  location: data.location || "",
+  summary: data.summary || "",
+  experience: data.experience || [],
+  education: data.education || [],
+  skills: data.skills || [],
+});
 
 const Index = () => {
   const [started, setStarted] = useState(false);
   const [step, setStep] = useState(1);
   const [resumeData, setResumeData] = useState<ResumeData>(emptyResume);
 
+  const {user} = useAuth();
 
-  const handleChoose = (method: "upload" | "manual") => {
-    if (method === "upload") {
-      // For now, load sample data to simulate upload
-      setResumeData(sampleResume);
+  useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth", // optional (use "auto" if you want instant)
+  });
+}, [step]);
+
+  const handleChoose = async (method: "upload" | "manual",file?:File) => {
+      if (method === "upload" && file) {
+
+        try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await api.post(
+          "/api/resume/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            withCredentials: true, 
+          }
+        );
+
+        setResumeData(normalizeResume(res.data.parsed));
+      } catch (err) {
+        console.error("Upload failed:", err);
+      }
     }
+
     setStep(2);
   };
 
@@ -97,52 +138,74 @@ const Index = () => {
 
             </div>
         </main>
-        {/* {Price Section} */}
-        <div id="pricing" className="scroll-mt-24 w-full justify-center items-center p-8 max-w-full grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            {/* Free Plan */}
-            <div className="border border-border rounded-xl p-6 cursor-pointer hover:border-accent transition">
-              <h3 className="text-xl font-semibold mb-2">Free</h3>
-              <p className="text-3xl font-bold mb-4">₹0</p>
-              <ul className="text-sm text-muted-foreground space-y-2 mb-6">
-                <li>1 Resume</li>
-                <li>Basic Templates</li>
-                <li>Download as PDF</li>
+          {/* {Price Section} */}
+          <div id="pricing" className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            {/* FREE */}
+            <div className="border border-border rounded-xl p-6 hover:shadow-md transition">
+              <h3 className="text-xl font-semibold text-center">Free</h3>
+              <p className="text-3xl font-bold text-center mt-2">₹0</p>
+
+              <ul className="text-sm text-muted-foreground space-y-2 my-6">
+                <li>✔ 1 Resume</li>
+                <li>✔ Basic Templates</li>
+                <li>✔ PDF Download</li>
+                <li>✖ ATS Score</li>
+                <li>✖ AI Suggestions</li>
               </ul>
-              <button className="w-full border border-border rounded-lg py-2 hover:bg-muted transition">
+
+              <button className="w-full border border-border rounded-lg py-2">
                 Get Started
               </button>
             </div>
 
-            {/* Plus Plan */}
-            <div className="border border-accent rounded-xl p-6 cursor-pointer shadow-md hover:shadow-lg transition">
-              <h3 className="text-xl font-semibold mb-2">Plus</h3>
-              <p className="text-3xl font-bold mb-4">₹299</p>
-              <ul className="text-sm text-muted-foreground space-y-2 mb-6">
-                <li>Unlimited Resumes</li>
-                <li>Premium Templates</li>
-                <li>ATS Score Check</li>
+            {/* PLUS (Best Value) */}
+            <div className="border border-accent rounded-xl p-6 shadow-lg bg-gradient-to-tr from-white to-gray-50 scale-105">
+              <p className="text-center text-xs font-semibold text-accent mb-2">
+                MOST POPULAR
+              </p>
+
+              <h3 className="text-xl font-semibold text-center text-accent">
+                Plus
+              </h3>
+              <p className="text-3xl font-bold text-center mt-2 text-accent">
+                ₹249<span className="text-sm font-normal">/month</span>
+              </p>
+
+              <ul className="text-sm text-muted-foreground space-y-2 my-6">
+                <li>✔ Unlimited Resumes</li>
+                <li>✔ Premium Templates</li>
+                <li>✔ ATS Score Check</li>
+                <li>✔ Export PDF</li>
+                <li>✖ AI Suggestions</li>
               </ul>
-              <button className="w-full bg-accent text-white rounded-lg py-2 hover:opacity-90 transition">
+
+              <button className="w-full bg-accent text-white rounded-lg py-2 hover:opacity-90">
                 Choose Plus
               </button>
             </div>
 
-            {/* Pro Plan */}
-            <div className="border border-border rounded-xl p-6 cursor-pointer hover:border-accent transition">
-              <h3 className="text-xl font-semibold mb-2">Pro</h3>
-              <p className="text-3xl font-bold mb-4">₹599</p>
-              <ul className="text-sm text-muted-foreground space-y-2 mb-6">
-                <li>Everything in Plus</li>
-                <li>AI Resume Suggestions</li>
-                <li>Priority Support</li>
+            {/* PRO */}
+            <div className="border border-border rounded-xl p-6 hover:shadow-md transition">
+              <h3 className="text-xl font-semibold text-center">Pro</h3>
+              <p className="text-3xl font-bold text-center mt-2">
+                ₹599<span className="text-sm font-normal">/month</span>
+              </p>
+
+              <ul className="text-sm text-muted-foreground space-y-2 my-6">
+                <li>✔ Everything in Plus</li>
+                <li>✔ AI Resume Suggestions</li>
+                <li>✔ ATS Optimization</li>
+                <li>✔ Priority Support</li>
+                <li>✔ Job-ready Resume Analysis</li>
               </ul>
-              <button className="w-full border border-border rounded-lg py-2 hover:bg-muted transition">
+
+              <button className="w-full border border-border rounded-lg py-2 hover:bg-muted">
                 Go Pro
               </button>
             </div>
-
           </div>
+
           <footer className="border-t border-border mt-12 px-6 py-10">
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
             
@@ -174,10 +237,10 @@ const Index = () => {
             <div>
               <h4 className="font-semibold mb-3">Support</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition">Help Center</a></li>
+                <li><a href="/help" className="hover:text-foreground transition">Help Center</a></li>
                 <li><a href="#" className="hover:text-foreground transition">Contact Us</a></li>
-                <li><a href="#" className="hover:text-foreground transition">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-foreground transition">Terms of Service</a></li>
+                <li><a href="/privacypolicy" className="hover:text-foreground transition">Privacy Policy</a></li>
+                <li><a href="/terms" className="hover:text-foreground transition">Terms of Service</a></li>
               </ul>
             </div>
 
@@ -194,9 +257,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="border-b border-border px-6 py-4 flex items-center gap-2 cursor-pointer" onClick={() => window.location.href = '/'} >
-        <span className="font-display font-bold">MiraiCV</span>
+        {/* Nav */}
+      <header className="border-b border-border px-6 py-4 flex items-center justify-between">
+        <Navbar/>
       </header>
+
 
       <main className="flex-1 px-6 py-8 max-w-6xl mx-auto w-full">
         <StepIndicator currentStep={step} steps={STEPS} />
@@ -210,7 +275,7 @@ const Index = () => {
             onBack={() => setStep(1)}
           />
         )}
-        {step === 3 && <StepThree data={resumeData} onBack={() => setStep(2)} />}
+        {step === 3 && <StepThree data={resumeData} onBack={() => setStep(2)} isLoggedin={user === null ? false : true} mode="not edit" resumeId=""/>}
       </main>
     </div>
   );

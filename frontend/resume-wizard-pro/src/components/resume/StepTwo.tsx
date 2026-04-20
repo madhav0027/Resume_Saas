@@ -93,7 +93,7 @@ const StepTwo = ({ data, onChange, onNext, onBack }: StepTwoProps) => {
             <Plus className="w-4 h-4 mr-1" /> Add
           </Button>
         </div>
-        {data.experience.map((exp) => (
+        {(data.experience || []).map((exp) => (
           <div key={exp.id} className="p-4 rounded-lg border border-border space-y-3 relative bg-card">
             <button onClick={() => removeExp(exp.id)} className="absolute top-3 right-3 text-muted-foreground hover:text-destructive">
               <Trash2 className="w-4 h-4" />
@@ -117,7 +117,7 @@ const StepTwo = ({ data, onChange, onNext, onBack }: StepTwoProps) => {
             <Plus className="w-4 h-4 mr-1" /> Add
           </Button>
         </div>
-        {data.education.map((edu) => (
+        {(data.education || []).map((edu) => (
           <div key={edu.id} className="p-4 rounded-lg border border-border space-y-3 relative bg-card">
             <button onClick={() => removeEdu(edu.id)} className="absolute top-3 right-3 text-muted-foreground hover:text-destructive">
               <Trash2 className="w-4 h-4" />
@@ -144,7 +144,7 @@ const StepTwo = ({ data, onChange, onNext, onBack }: StepTwoProps) => {
           <Button variant="outline" onClick={addSkill}>Add</Button>
         </div>
         <div className="flex flex-wrap gap-2">
-          {data.skills.map((skill) => (
+          {(data.skills || []).map((skill) => (
             <span
               key={skill}
               className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-sm"

@@ -28,7 +28,7 @@ const Template = () => {
               hover:-translate-y-1 hover:shadow-lg
               ${
                   isSelected
-                  ? "border-accent ring-2 ring-accent/30 shadow-md"
+                  ? " ring-2 ring-accent/30 shadow-md"
                   : "border-border hover:border-accent/60"
                 }
                 `}
@@ -41,7 +41,7 @@ const Template = () => {
 
             {/* Compact Preview Box */}
             <div className="p-3">
-              <div className="scale-[0.6] origin-top overflow-hidden h-[260px] flex justify-center">
+              <div className="scale-[0.8] origin-top overflow-hidden h-[260px] flex justify-center">
                 <ResumePreview
                   data={sampleResume}
                   template={tempdata}

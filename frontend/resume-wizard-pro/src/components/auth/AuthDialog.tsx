@@ -1,4 +1,8 @@
+import { api } from "@/api/api";
+import { useAuth } from "@/Authprovider/AuthProvider";
+import { Chrome , Github} from "lucide-react";
 import React, { useState } from "react";
+
 
 interface LoginData {
   email: string;
@@ -6,6 +10,7 @@ interface LoginData {
 }
 
 interface RegisterData {
+  fullName: string;
   email: string;
   password: string;
   repeatPassword: string;
@@ -20,6 +25,7 @@ interface AuthDialogProps {
 
 const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose }) => {
   const [mode, setMode] = useState<Mode>("login");
+  const {login} = useAuth();
 
   const [loginData, setLoginData] = useState<LoginData>({
     email: "",
@@ -27,16 +33,55 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose }) => {
   });
 
   const [registerData, setRegisterData] = useState<RegisterData>({
+    fullName: "",
     email: "",
     password: "",
     repeatPassword: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   if (!open) return null;
+
+
+  const SocialLogin = () => (
+    <div className="flex gap-3 justify-center">
+      
+      <button
+        className="w-10 h-10 flex items-center justify-center border border-border rounded-lg hover:bg-muted transition"
+        title="Continue with Google"
+        onClick={() => console.log("Google login")}
+      >
+        <Chrome className="w-5 h-5" />
+      </button>
+
+      <button
+        className="w-10 h-10 flex items-center justify-center border border-border rounded-lg hover:bg-muted transition"
+        title="Continue with GitHub"
+        onClick={() => console.log("GitHub login")}
+      >
+        <Github className="w-5 h-5" />
+      </button>
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
       <div className="w-full max-w-lg bg-background border border-border rounded-2xl p-8 shadow-2xl animate-fade-in">
+
+        {/* //Loading */}
+        {loading && (
+        <div className="absolute inset-0 bg-background/70 backdrop-blur-sm flex items-center justify-center rounded-2xl z-50">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-muted-foreground">Please wait...</p>
+          </div>
+        </div>
+      )}
+
+      {error && (
+          <div className="text-sm text-red-500 text-center">{error}</div>
+        )}
 
         {/* Title */}
         <div className="text-center mb-6">
@@ -77,13 +122,26 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose }) => {
 
             <button
               className="w-full bg-accent text-white py-3 rounded-xl font-semibold hover:opacity-90 transition"
-              onClick={() => {
-                console.log("Login:", loginData);
-                onClose();
+              onClick={async () => {
+                try {
+                  setLoading(true);
+                  setError("");
+
+                  const res = await api.post("api/auth/login", loginData);
+                  
+                  await login();
+                  onClose();
+                } catch (err: any) {
+                  setError(err?.response?.data?.message || err?.response?.data?.msg);
+                } finally {
+                  setLoading(false);
+                }
               }}
             >
               Login
             </button>
+
+            <SocialLogin />
 
             <div className="text-center text-sm text-muted-foreground">
               Don’t have an account?{" "}
@@ -99,7 +157,17 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose }) => {
 
         {/* REGISTER */}
         {mode === "register" && (
-          <div className="space-y-4">
+          <div className="space-y-2">
+            <input
+              type="text"
+              placeholder="Full name"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-accent"
+              value={registerData.fullName}
+              onChange={(e) =>
+                setRegisterData({ ...registerData, fullName: e.target.value })
+              }
+            />
+
             <input
               type="email"
               placeholder="Email address"
@@ -135,20 +203,39 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose }) => {
 
             <button
               className="w-full bg-accent text-white py-3 rounded-xl font-semibold hover:opacity-90 transition"
-              onClick={() => {
-                if (
-                  registerData.password !== registerData.repeatPassword
-                ) {
+              onClick={async () => {
+                if (registerData.password !== registerData.repeatPassword) {
                   alert("Passwords do not match");
                   return;
                 }
 
-                console.log("Register:", registerData);
-                setMode("verify");
+                try {
+                  console.log("click")
+                  setLoading(true);
+                  setError("");
+
+                  const userPayload = {
+                    name: registerData.fullName,
+                    email: registerData.email,
+                    password: registerData.password,
+                  };
+
+                  const res = await api.post("/api/auth/register", userPayload);
+
+                  console.log("Register success:", res.data);
+
+                  setMode("verify");
+                } catch (err: any) {
+                  setError(err?.response?.data?.message || err?.response?.data?.msg);
+                } finally {
+                  setLoading(false);
+                }
               }}
             >
               Create Account
             </button>
+
+            <SocialLogin />
 
             <div className="text-center text-sm text-muted-foreground">
               Already have an account?{" "}

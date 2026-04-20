@@ -1,21 +1,34 @@
 import { Bell } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AuthDialog from "./auth/AuthDialog";
+import { api } from "@/api/api";
+import { useAuth } from "@/Authprovider/AuthProvider";
+import Loading from "./Loading";
 
 const Navbar = () => {
 
+      // User
+      const {user,loading,logout} = useAuth();
       //Auth
       const [isOpen, setIsOpen] = useState(false);
       const [authOpen,setauthopen] = useState(false);
-      const [isLoggedIn, setIsLoggedIn] = useState(false); // replace with real auth later
     
       //Notification
       const [notifOpen, setNotifOpen] = useState(false);
     
       const [notifications, setNotifications] = useState<string[]>([]);
+      
+      useEffect(() => {
+  if (user) {
+    const message = `Welcome back ${user.name || ""}`;
+    setNotifications(prev =>
+      prev.includes(message) ? prev : [...prev, message]
+    );
+  }
+}, [user]);
 
     return(
-        <>
+      <>
         <AuthDialog open={authOpen} onClose={() => setauthopen(false)}/>
         <div className=" cursor-pointer flex items-center gap-2" onClick={() => window.location.href = "/"}>
           <span className="font-display font-bold text-lg">MiraiCV</span>
@@ -23,10 +36,9 @@ const Navbar = () => {
 
         {/* Center: Navigation Links */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
-          <a href="#" className="hover:text-foreground transition">Dashboard</a>
-          <a href="#" className="hover:text-foreground transition">My Resumes</a>
+          <a href="/" className="hover:text-foreground transition">Dashboard</a>
           <a href="/template" className="hover:text-foreground transition">Templates</a>
-          <a href="#pricing" className="hover:text-foreground transition">Pricing</a>
+          <a href="/pricing" className="hover:text-foreground transition">Pricing</a>
         </nav>
 
         {/* Right: Actions + User */}
@@ -80,26 +92,36 @@ const Navbar = () => {
         <div className="relative">
           {/* Avatar */}
           <div
-            onClick={() => {if(!isLoggedIn) setauthopen(true)}}
+            onClick={() => {if(!user) 
+                setauthopen(true) 
+              else {
+                setIsOpen(!isOpen)}
+              }
+              }
             className="w-9 h-9 rounded-full bg-accent text-white flex items-center justify-center font-semibold cursor-pointer hover:opacity-90"
           >
-            U
+          {user?.profilepic ? (
+              <img
+                src={user?.profilepic}
+                alt="profile"
+                className="w-full h-full object-cover rounded-full"
+              />
+            ) : (
+              "U"
+            )}
           </div>
 
           {/* Dropdown (if logged in) */}
-          {isOpen && isLoggedIn && (
+          {isOpen && user && (
             <div className="absolute right-0 mt-2 w-44 bg-background border border-border rounded-lg shadow-md p-2 z-50">
               <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded-md">
-                My Resumes
+               <a href="/myresume">My Resumes </a> 
               </button>
-              <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded-md">
+              <button onClick={() => window.location.href = '/settings'} className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded-md">
                 Settings
               </button>
               <button
-                onClick={() => {
-                  setIsLoggedIn(false);
-                  setIsOpen(false);
-                }}
+                onClick={logout}
                 className="w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-muted rounded-md"
               >
                 Logout

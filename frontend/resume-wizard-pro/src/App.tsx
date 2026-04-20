@@ -6,9 +6,42 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Template from "./pages/Template.tsx";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import TermsPage from "./pages/terms.tsx";
+import PrivacyPage from "./pages/privacy.tsx";
+import HelpPage from "./pages/help.tsx";
+import MyResumes from "./pages/MyResume.tsx";
+import { AuthProvider, useAuth } from "./Authprovider/AuthProvider.tsx";
+import Loading from "./components/Loading.tsx";
+import Builder from "./pages/builder.tsx";
+import Setting from "./pages/Settings.tsx";
+import Pricing from "./pages/Pricing.tsx";
+
 
 const queryClient = new QueryClient();
+
+const AppContent = () => {
+  const { loading } = useAuth();
+
+  if (loading) return <Loading fullScreen />;
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/pricing" element={<Pricing/>}/>
+        <Route path="/builder" element={<Builder />} />
+        <Route path="/settings" element={<Setting/>}/>
+        <Route path="/myresume" element={<MyResumes />} />
+        <Route path="/help" element={<HelpPage />} />
+        <Route path="/privacypolicy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/" element={<Index />} />
+        <Route path="/template" element={<Template />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
 const App = () => {
   const [chatOpen, setChatOpen] = useState(false);
@@ -16,45 +49,48 @@ const App = () => {
   const [messages, setMessages] = useState([
     {
       role: "bot",
-      text: "Hi 👋 I’m ResumeForge assistant. How can I help you?",
+      text: "Hi 👋 I’m MiraiCVAI assistant. How can I help you?",
     },
   ]);
 
   const [input, setInput] = useState("");
 
-  // send message
-  const sendMessage = () => {
-    if (!input.trim()) return;
+    const sendMessage = () => {
+      if (!input.trim()) return;
 
-    const userMsg = { role: "user", text: input };
+      const userMsg = { role: "user", text: input };
+      setMessages((prev) => [...prev, userMsg]);
+      setInput("");
 
-    setMessages((prev) => [...prev, userMsg]);
-    setInput("");
+      setTimeout(() => {
+        let botReply = "I'm sorry, I can only help you with building CV, resume, or portfolio.";
 
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "bot",
-          text: "Got it 👍 I’ll help you improve your resume.",
-        },
-      ]);
-    }, 500);
-  };
+        const text = input.toLowerCase();
+
+        // Greeting responses
+        if (["hi", "hello", "hey", "greetings"].some((g) => text.includes(g))) {
+          botReply = "Hello! 👋 How can I assist you with your CV, resume, or portfolio today?";
+        }
+
+        // Resume/CV/Portfolio responses
+        if (["resume", "cv", "portfolio"].some((k) => text.includes(k))) {
+          botReply =
+            "Miraicvai has good ATS score, AI experience, and everything you need to make your resume or portfolio stand out!";
+        }
+
+        setMessages((prev) => [...prev, { role: "bot", text: botReply }]);
+      }, 500);
+    };
+  
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
-
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/template" element={<Template />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <AuthProvider>
+          <AppContent/>
+        </AuthProvider>
 
         <div className="fixed bottom-6 right-6 z-50">
           <button
