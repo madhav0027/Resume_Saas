@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const res = await api.get("/api/user")
 
-      if (res.statusText !== "OK") {
+      if (res.status !== 200) {
         setUser(null);
         return;
       }
