@@ -152,6 +152,7 @@ exports.refreshToken = async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
+      path:'/',
       maxAge: 15 * 60 * 1000,
     });
 

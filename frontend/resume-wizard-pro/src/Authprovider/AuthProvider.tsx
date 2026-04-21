@@ -52,9 +52,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await api.post("/api/logout");
 
       setUser(null);
+      localStorage.clear();
     setLoading(false);
     window.location.href = "/myresume";
-    localStorage.clear();
     } catch (err) {
       console.error("Logout failed", err);
     }
