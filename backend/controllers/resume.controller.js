@@ -5,7 +5,7 @@ const { parseResume } = require("../services/parser.service");
 exports.uploadResume = async (req, res) => {
   try {
     console.log(req.file);
-    const result = await parseResume(req.file.path);
+    const result = await parseResume(req.file.buffer);
     console.log(result)
     res.json(result);
   } catch (err) {

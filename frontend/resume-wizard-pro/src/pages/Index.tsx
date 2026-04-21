@@ -139,7 +139,7 @@ const Index = () => {
             </div>
         </main>
           {/* {Price Section} */}
-          <div id="pricing" className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div id="pricing" className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             {/* FREE */}
             <div className="border border-border rounded-xl p-6 hover:shadow-md transition">
@@ -153,43 +153,13 @@ const Index = () => {
                 <li>✖ ATS Score</li>
                 <li>✖ AI Suggestions</li>
               </ul>
-
-              <button className="w-full border border-border rounded-lg py-2">
-                Get Started
-              </button>
-            </div>
-
-            {/* PLUS (Best Value) */}
-            <div className="border border-accent rounded-xl p-6 shadow-lg bg-gradient-to-tr from-white to-gray-50 scale-105">
-              <p className="text-center text-xs font-semibold text-accent mb-2">
-                MOST POPULAR
-              </p>
-
-              <h3 className="text-xl font-semibold text-center text-accent">
-                Plus
-              </h3>
-              <p className="text-3xl font-bold text-center mt-2 text-accent">
-                ₹249<span className="text-sm font-normal">/month</span>
-              </p>
-
-              <ul className="text-sm text-muted-foreground space-y-2 my-6">
-                <li>✔ Unlimited Resumes</li>
-                <li>✔ Premium Templates</li>
-                <li>✔ ATS Score Check</li>
-                <li>✔ Export PDF</li>
-                <li>✖ AI Suggestions</li>
-              </ul>
-
-              <button className="w-full bg-accent text-white rounded-lg py-2 hover:opacity-90">
-                Choose Plus
-              </button>
             </div>
 
             {/* PRO */}
-            <div className="border border-border rounded-xl p-6 hover:shadow-md transition">
+            <div className="border border-accent rounded-xl p-6 hover:shadow-md transition">
               <h3 className="text-xl font-semibold text-center">Pro</h3>
               <p className="text-3xl font-bold text-center mt-2">
-                ₹599<span className="text-sm font-normal">/month</span>
+                ₹299<span className="text-sm font-normal">/month</span>
               </p>
 
               <ul className="text-sm text-muted-foreground space-y-2 my-6">
@@ -200,7 +170,7 @@ const Index = () => {
                 <li>✔ Job-ready Resume Analysis</li>
               </ul>
 
-              <button className="w-full border border-border rounded-lg py-2 hover:bg-muted">
+              <button className="w-full border border-border rounded-lg py-2 hover:bg-accent">
                 Go Pro
               </button>
             </div>

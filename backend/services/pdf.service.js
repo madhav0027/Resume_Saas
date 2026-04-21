@@ -2,15 +2,10 @@
 const fs = require("fs");
 const { PDFParse } = require("pdf-parse");
 
-exports.extractTextFromPDF = async (filePath) => {
-  const buffer = fs.readFileSync(filePath);
+exports.extractTextFromPDF = async (buffer) => {
 
-  const parser = new PDFParse({ data: buffer });
+  const parser = await new PDFParse({data:buffer});
   const result = await parser.getText();
-
-  await parser.destroy();
-  fs.unlinkSync(filePath);
-
 
   return result.text;
 };

@@ -39,7 +39,7 @@ exports.register = async (req,res) => {
       endDate: new Date("2099-12-31")
     })
 
-    const verifyLink = `http://192.168.31.118:5000/api/auth/verify/${verificationToken}`;
+    const verifyLink = `${process.env.SERVER_URL}/api/auth/verify/${verificationToken}`;
 
     await sendEmail(
       email,

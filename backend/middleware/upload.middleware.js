@@ -1,4 +1,4 @@
 // upload.middleware.js
 const multer = require("multer");
 
-module.exports = multer({ dest: "/uploads/" });
+module.exports = multer({ storage:multer.memoryStorage() });

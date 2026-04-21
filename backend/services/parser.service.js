@@ -2,8 +2,8 @@
 const { extractTextFromPDF } = require("./pdf.service");
 const { extractResumeDetails } = require("../utils/extractors");
 
-exports.parseResume = async (filePath) => {
-  const text = await extractTextFromPDF(filePath);
+exports.parseResume = async (buffer) => {
+  const text = await extractTextFromPDF(buffer);
   const parsed = await extractResumeDetails(text);
 
   return {
