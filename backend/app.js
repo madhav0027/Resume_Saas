@@ -13,7 +13,7 @@ const cookieparser = require('cookie-parser');
 app.use(cookieparser());
 app.use(express.json());
 app.use(cors({
-    origin:"http://192.168.31.118:8080",
+    origin:process.env.CLIENT_URL,
     credentials:true
 }))
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export const api = axios.create({
-    baseURL:"http://192.168.31.118:5000/",
+    baseURL:"https://resume-saas-1ajp.onrender.com/",
     withCredentials:true
 })
