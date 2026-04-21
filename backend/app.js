@@ -9,6 +9,8 @@ const db = require("./database/db");
 const app = express();
 const cookieparser = require('cookie-parser');
 
+console.log(process.env.CLIENT_URL)
+
 // app.use(helmet())
 app.use(cookieparser());
 app.use(express.json());
