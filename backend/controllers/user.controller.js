@@ -47,14 +47,14 @@ exports.logout = async (req,res) => {
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
+      sameSite: "None",
       path: "/"
     });
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
+      sameSite: "None",
       path: "/"
     });
 

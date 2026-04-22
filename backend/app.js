@@ -12,6 +12,7 @@ const cookieparser = require('cookie-parser');
 console.log(process.env.CLIENT_URL)
 
 // app.use(helmet())
+app.set("trust proxy", 1);
 app.use(cookieparser());
 app.use(express.json());
 app.use(cors({
