@@ -1,4 +1,4 @@
-#  MiraiCV AI — Resume Builder SaaS
+ MiraiCV AI — Resume Builder SaaS
 
 MiraiCV AI is an AI-powered resume builder that generates ATS-friendly resumes, provides optimization suggestions, and recommends jobs based on user profiles.
 
@@ -158,7 +158,6 @@ CLIENT_URL=
 SERVER_URL=
 ```
 
-(Optional future)
 
 ```env
 DATABASE_URL=your_database_url
